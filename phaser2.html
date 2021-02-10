@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>QuieroConTic</title>
+	<!--Jquery-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/phaser@3.50.0/dist/phaser.min.js"></script>
+	
+	<!--Style-->
+	<style type="text/css">
+		*{margin:0; padding:0; box-sizing:border-box;}
+	</style>
+</head>
+<body>
+	<div id="lienzo"></div>
+	<script type="text/javascript">
+        var gobj=[];
+        var state_col=false;
+        var posx=0; var posy=0;
+		var config = {
+            type: Phaser.AUTO,
+            width: 731,
+            height: 411,
+            scale:{
+                mode: Phaser.Scale.FIT,
+               // parent: 'juego',
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            },
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 },
+                    debug: false
+                }
+            },
+            input:{
+                activePointers:3
+            },
+             scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        var game = new Phaser.Game(config);
+
+function preload ()
+{
+    this.load.image('fondo', 'img/fondo3.jpg');
+    this.load.image('caja', 'img/caja.png');
+    this.load.image('flor','img/flor.png');
+    this.load.image('diamante','img/diamante.png');
+    this.load.image('animal','img/animal.png');
+    this.load.image('vegetal','img/vegetal.png');
+    this.load.image('mineral','img/mineral.png');
+
+    this.load.image('agua','img/agua.png');
+    this.load.image('algodon','img/algodon.png');
+    this.load.image('cuero','img/cuero.png');
+    this.load.image('frutas','img/frutas.png');
+    this.load.image('lana','img/lana.png');
+    this.load.image('leche','img/leche.png');
+    this.load.image('madera','img/madera.png');
+    this.load.image('petroleo','img/petroleo.png');
+}
+
+function create ()
+{
+    //para detectar objetos debajo de otro
+    //this.input.setTopOnly(false);
+    //
+    var elements=[
+    {
+       'id':'caja1',
+       'img':'caja',
+       'x':124,
+       'y':345,
+       'scale':0.3,
+       'interactive':true,
+       'drag':false,
+       'showPos':true  
+    },
+    {
+       'id':'caja2',
+       'img':'caja',
+       'x':363,
+       'y':345,
+       'scale':0.3,
+       'interactive':true,
+       'drag':false,
+       'showPos':true  
+    },
+    {
+       'id':'caja3',
+       'img':'caja',
+       'x':606,
+       'y':345,
+       'scale':0.3,
+       'interactive':true,
+       'drag':false,
+       'showPos':true  
+    },
+    {
+        'id':'txtanimal',
+        'img':'animal',
+        'x':123,
+        'y':397,
+        'scale':0.3,
+        'interactive':false,
+        'drag':false,
+        'showPos':false,
+    },
+    {
+        'id':'txtvegetal',
+        'img':'vegetal',
+        'x':365,
+        'y':397,
+        'scale':0.3,
+        'interactive':false,
+        'drag':false,
+        'showPos':false,
+    },
+    {
+        'id':'txtmineral',
+        'img':'mineral',
+        'x':614,
+        'y':397,
+        'scale':0.3,
+        'interactive':false,
+        'drag':false,
+        'showPos':false,
+    },
+    {
+        'id':'diamante',
+        'img':'diamante',
+        'x':248,
+        'y':122,
+        'scale':0.3,
+        'interactive':true,
+        'drag':true,
+        'showPos':true,
+        'colision':[{'obj':'caja1','funcion':'colisionErrada'},
+                    {'obj':'caja2','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionAcertada'}]
+    },
+    {
+       'id':'flor',
+       'img':'flor',
+       'x':537,
+       'y':66,
+       'scale':0.3,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja2','funcion':'colisionAcertada'},
+                    {'obj':'caja3','funcion':'colisionErrada'},
+                    {'obj':'caja1','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'agua',
+       'img':'agua',
+       'x':675,
+       'y':157,
+       'scale':0.6,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja3','funcion':'colisionAcertada'},
+                    {'obj':'caja1','funcion':'colisionErrada'},
+                    {'obj':'caja2','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'algodon',
+       'img':'algodon',
+       'x':458,
+       'y':115,
+       'scale':0.3,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja2','funcion':'colisionAcertada'},
+                    {'obj':'caja1','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'cuero',
+       'img':'cuero',
+       'x':340,
+       'y':78,
+       'scale':0.1,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja1','funcion':'colisionAcertada'},
+                    {'obj':'caja2','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'frutas',
+       'img':'frutas',
+       'x':513,
+       'y':166,
+       'scale':0.3,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja2','funcion':'colisionAcertada'},
+                    {'obj':'caja1','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'lana',
+       'img':'lana',
+       'x':72,
+       'y':94,
+       'scale':0.2,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja1','funcion':'colisionAcertada'},
+                    {'obj':'caja2','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'leche',
+       'img':'leche',
+       'x':155,
+       'y':125,
+       'scale':0.15,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja1','funcion':'colisionAcertada'},
+                    {'obj':'caja2','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'madera',
+       'img':'madera',
+       'x':312,
+       'y':167,
+       'scale':0.2,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja2','funcion':'colisionAcertada'},
+                    {'obj':'caja1','funcion':'colisionErrada'},
+                    {'obj':'caja3','funcion':'colisionErrada'}]
+    },
+    {
+       'id':'petroleo',
+       'img':'petroleo',
+       'x':624,
+       'y':80,
+       'scale':0.2,
+       'interactive':true,
+       'drag':true,
+       'showPos':true ,
+       'colision':[{'obj':'caja3','funcion':'colisionAcertada'},
+                    {'obj':'caja1','funcion':'colisionErrada'},
+                    {'obj':'caja2','funcion':'colisionErrada'}]
+    }
+    ];
+    //acomoda los elementos
+    var fondo = this.add.sprite(0,0, 'fondo').setOrigin(0,0);
+    
+    for(var i=0;i<elements.length;i++){
+        var a = this.physics.add.sprite(elements[i].x,elements[i].y,elements[i].img).setScale(elements[i].scale);
+        a.name=elements[i].id;
+
+        if(elements[i].interactive){
+            a.setInteractive();
+        }
+        if(elements[i].drag){
+            this.input.setDraggable(a);
+        }
+        if(elements[i].showPos){
+            a.on('pointerdown', function (event) {
+                console.log(this);
+            });
+        }
+
+        gobj.push(a);
+    }
+
+    //agregamos las colisiones
+    for(var i=0;i<elements.length;i++){
+        var a=gobj[i];
+        var b=elements[i].colision;
+        if(b!==undefined){
+            if(b.length>0){
+                for(var j=0;j<b.length;j++){
+                    //console.log(b[j]);
+                    var c=b[j].obj;
+                    var d=b[j].funcion;
+                    //console.log(d);
+                    var e=buscarObjeto(c);
+                    //console.log(a.name);
+                    this.physics.add.collider(a,e,eval(d),null,this);
+                }
+            }
+        }
+    }
+
+    function buscarObjeto(id){
+        //console.log("voy a buscar "+id);
+        for(var i=0;i<gobj.length;i++){
+            var n=gobj[i].name;
+            if(id===n){
+                return(gobj[i]);
+            }
+        }
+    }
+
+    function colisionAcertada(){
+        state_col=true;
+    }
+    
+    function colisionErrada(){
+        state_col=false;
+    }
+    ///Eventos para objetos arrastrables
+    this.input.on('dragstart', function (pointer, gameObject) {
+        posx=gameObject.x;
+        posy=gameObject.y;
+    });
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+        gameObject.x = dragX;
+        gameObject.y = dragY;
+    });
+    this.input.on('dragend', function (pointer, gameObject) {
+        if(state_col){
+            gameObject.disableBody(true, true);
+        }else{
+            gameObject.x=posx;
+            gameObject.y=posy;  
+        }
+    });
+}
+
+function update(){
+
+}
+
+function colisionAcertada(objeto,caja){
+    estado_col=true;
+}
+
+function colisionErrada(objeto,caja){
+    estado_col=false;
+}
+
+
+	</script>
+</body>
+</html>
