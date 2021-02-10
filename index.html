@@ -333,6 +333,7 @@ function create ()
     this.input.on('dragend', function (pointer, gameObject) {
         if(state_col){
             gameObject.disableBody(true, true);
+	    state_col=false;
         }else{
             gameObject.x=posx;
             gameObject.y=posy;  
